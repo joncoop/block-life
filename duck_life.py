@@ -1,6 +1,5 @@
 # Imports
 import pygame
-import intersects
 import random
 
 # Initialize game engine
@@ -27,7 +26,21 @@ BLACK = (0, 0, 0)
 # Fonts
 my_font = pygame.font.Font(None, 50)
     
-# helper functions    
+# helper functions
+def intersects(rect1, rect2):
+    left1 = rect1[0]
+    right1 = rect1[0] + rect1[2] - 1
+    top1 = rect1[1]
+    bottom1 = rect1[1] + rect1[3] - 1
+
+    left2 = rect2[0]
+    right2 = rect2[0] + rect2[2] - 1
+    top2 = rect2[1]
+    bottom2 = rect2[1] + rect2[3] - 1
+
+    return not (right1 < left2 or right2 < left1 or
+                bottom1 < top2 or bottom2 < top1)
+
 def generate_platform(y):
     opening_size = 200
     w = WIDTH - opening_size
@@ -117,7 +130,7 @@ while not done:
         
         ''' resolve collisions with each wall '''
         for wall in walls:
-            if intersects.rect_rect(duck, wall):
+            if intersects(duck, wall):
                 duck_vy = 0
                 duck[1] = wall[1] - duck[3]
 
@@ -126,7 +139,7 @@ while not done:
 
         ''' resolve collisions with each wall again '''
         for wall in walls:
-            if intersects.rect_rect(duck, wall):
+            if intersects(duck, wall):
                 if duck_vx > 0:
                     duck[0] = wall[0] - duck[2]
                 elif duck_vx < 0:
