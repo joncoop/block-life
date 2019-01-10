@@ -23,6 +23,10 @@ WHITE = (255, 255, 255)
 RED = (255, 0, 0)
 BLACK = (0, 0, 0)
 
+# Sounds
+pygame.mixer.music.load("sounds/theme.ogg")
+coin_sound = pygame.mixer.Sound("sounds/coin.ogg")
+
 # Fonts
 font_sm = pygame.font.Font(None, 40)
 font_md = pygame.font.Font(None, 80)
@@ -178,14 +182,12 @@ def update_block():
         block[0] = WIDTH - block[2]
 
     ''' collect coins '''
-    hit_list = []
-    for coin in coins:
-        if intersects(block, coin):
-            hit_list.append(coin)
-            collected_coins += 1
+    hit_list = [coin for coin in coins if intersects(block, coin)]
             
     for hit in hit_list:
+        coin_sound.play()
         coins.remove(hit)
+        collected_coins += 1
         
 def update_score():
     global score
@@ -239,6 +241,8 @@ def draw_end_screen():
 # Game loop
 setup()
 done = False
+
+pygame.mixer.music.play(-1)
 
 while not done:
     # Event processing (React to key presses, mouse clicks, etc.)
