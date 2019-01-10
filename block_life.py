@@ -65,28 +65,43 @@ def generate_platform(y):
 
     wall1[0] -= offset
     wall2[0] -= offset
-    
-    return wall1, wall2
+
+    if random.randrange(0, 2) == 0:
+        x = random.randrange(50, WIDTH - 50)
+        y = y - 38
+        coin = [x, y, 25, 25]
+    else:
+        coin = None
+        
+    return wall1, wall2, coin
 
 def setup():
     global block, block_vx, block_vy, block_speed, score 
     global platform_gap, walls, wall_speed, stage
+    global coins, collected_coins
            
     ''' Make a block '''
     block =  [375, 25, 50, 50]
     block_vx = 0
     block_vy = 0
     block_speed = 6
+
+    ''' scoring '''
     score = 0
+    collected_coins = 0
 
     ''' make starting walls '''
     platform_gap = 200
     walls = []
-
-    for i in range(4):
-        left, right = generate_platform(i * platform_gap + platform_gap)
+    coins = []
+    
+    for i in range(5):
+        left, right, coin = generate_platform(i * platform_gap + platform_gap)
         walls.append(left)
         walls.append(right)
+
+        if coin != None:
+            coins.append(coin)
 
     ''' initial wall speed '''
     wall_speed = 2
@@ -95,23 +110,39 @@ def setup():
     stage = START
 
 def update_platforms():
+    global coins
     to_remove = None
     
-    for w in walls:
-        w[1] -= wall_speed
+    for wall in walls:
+        wall[1] -= wall_speed
 
-        if w[1] + w[3] < 0:
-            to_remove = w
+        if wall[1] + wall[3] < 0:
+            to_remove = wall
 
     if to_remove != None:
         walls.remove(to_remove)
         y = walls[-1][1] + platform_gap
-        left, right = generate_platform(y)
+        left, right, coin = generate_platform(y)
         walls.append(left)
         walls.append(right)
+        
+        if coin != None:
+            coins.append(coin)
+            
+def update_coins():
+    to_remove = None
+    
+    for coin in coins:
+        coin[1] -= wall_speed
+
+        if coin[1] + coin[3] < 0:
+            to_remove = coin
+
+    if to_remove != None:
+        coins.remove(to_remove)
             
 def update_block():
-    global block, block_vx, block_vy
+    global block, block_vx, block_vy, collected_coins
     
     ''' apply gravity '''
     block_vy += gravity
@@ -120,8 +151,8 @@ def update_block():
     if block[1] < 500:
         block[1] += block_vy
     else:
-        for wall in walls:
-            wall[1] -= block_vy
+        for obj in (walls + coins):
+            obj[1] -= block_vy
 
     ''' resolve collisions with each wall '''
     for wall in walls:
@@ -145,6 +176,16 @@ def update_block():
         block[0] = 0
     elif block[0] > WIDTH - block[2]:
         block[0] = WIDTH - block[2]
+
+    ''' collect coins '''
+    hit_list = []
+    for coin in coins:
+        if intersects(block, coin):
+            hit_list.append(coin)
+            collected_coins += 1
+            
+    for hit in hit_list:
+        coins.remove(hit)
         
 def update_score():
     global score
@@ -162,12 +203,20 @@ def draw_block():
     pygame.draw.rect(screen, YELLOW, block)
 
 def draw_platforms():
-    for w in walls:
-        pygame.draw.rect(screen, WHITE, w)
+    for wall in walls:
+        pygame.draw.rect(screen, WHITE, wall)
+
+def draw_coins():
+    for coin in coins:
+        pygame.draw.rect(screen, YELLOW, coin)
         
 def draw_score():
     text = font_md.render(str(score), 1, RED)
     screen.blit(text, (20, 20))
+    
+    text = font_md.render(str(collected_coins), 1, YELLOW)
+    w = text.get_width()
+    screen.blit(text, (WIDTH - w - 20, 20))
     
 def draw_start_screen():
         text = font_xl.render("BLOCK LIFE", 1, RED)
@@ -220,6 +269,7 @@ while not done:
 
         ''' update game '''
         update_platforms()
+        update_coins()
         update_block()
         update_score()
         update_level()
@@ -232,6 +282,7 @@ while not done:
     screen.fill(BLACK)
     draw_block()
     draw_platforms()
+    draw_coins()
     draw_score()
 
     if stage == START:
