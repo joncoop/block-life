@@ -18,10 +18,10 @@ clock = pygame.time.Clock()
 refresh_rate = 60
 
 # Colors
-YELLOW = (255, 255, 0)
+YELLOW = (239, 239, 0)
 WHITE = (255, 255, 255)
-RED = (255, 0, 0)
-BLACK = (0, 0, 0)
+LIGHT_BROWN = (139, 106, 73)
+DARK_BROWN = (98, 79, 60)
 
 # Sounds
 pygame.mixer.music.load("sounds/theme.ogg")
@@ -201,19 +201,22 @@ def update_level():
         wall_speed += .5
             
 # Drawing functions
+def draw_background():
+    screen.fill(DARK_BROWN)
+
 def draw_block():
     pygame.draw.rect(screen, YELLOW, block)
 
 def draw_platforms():
     for wall in walls:
-        pygame.draw.rect(screen, WHITE, wall)
+        pygame.draw.rect(screen, LIGHT_BROWN, wall)
 
 def draw_coins():
     for coin in coins:
         pygame.draw.rect(screen, YELLOW, coin)
         
 def draw_score():
-    text = font_md.render(str(score), 1, RED)
+    text = font_md.render(str(score), 1, WHITE)
     screen.blit(text, (20, 20))
     
     text = font_md.render(str(collected_coins), 1, YELLOW)
@@ -221,20 +224,20 @@ def draw_score():
     screen.blit(text, (WIDTH - w - 20, 20))
     
 def draw_start_screen():
-        text = font_xl.render("BLOCK LIFE", 1, RED)
+        text = font_xl.render("BLOCK LIFE", 1, WHITE)
         w = text.get_width()
         screen.blit(text, (WIDTH/2 - w/2, 180))
         
-        text = font_sm.render("Press SPACE to start", 1, RED)
+        text = font_sm.render("Press SPACE to start", 1, WHITE)
         w = text.get_width()
         screen.blit(text, (WIDTH/2 - w/2, 280))
         
 def draw_end_screen():
-        text = font_lg.render("GAME OVER", 1, RED)
+        text = font_lg.render("GAME OVER", 1, WHITE)
         w = text.get_width()
         screen.blit(text, (WIDTH/2 - w/2, 200))
         
-        text = font_sm.render("Press SPACE to play again", 1, RED)
+        text = font_sm.render("Press SPACE to play again", 1, WHITE)
         w = text.get_width()
         screen.blit(text, (WIDTH/2 - w/2, 280))
 
@@ -283,7 +286,7 @@ while not done:
             stage = END
             
     # Drawing code
-    screen.fill(BLACK)
+    draw_background()
     draw_block()
     draw_platforms()
     draw_coins()
