@@ -197,8 +197,8 @@ def update_score():
 def update_level():
     global wall_speed
     
-    if score % 500 == 0:
-        wall_speed += .5
+    if score % 100 == 0:
+        wall_speed += .08
             
 # Drawing functions
 def draw_background():
