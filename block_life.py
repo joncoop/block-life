@@ -146,10 +146,11 @@ def update_coins():
 
     if to_remove != None:
         coins.remove(to_remove)
-        score += 100
             
 def update_block():
-    global block, block_vx, block_vy, collected_coins
+    global block, block_vx, block_vy, block_speed
+    global score, collected_coins
+    global message_timer
     
     ''' apply gravity '''
     block_vy += gravity
@@ -191,6 +192,11 @@ def update_block():
         coin_sound.play()
         coins.remove(hit)
         collected_coins += 1
+        score += 100
+
+        if collected_coins == 15:
+            block_speed += 2
+            message_timer = 2 * refresh_rate
         
 def update_score():
     global score
@@ -244,9 +250,15 @@ def draw_end_screen():
         w = text.get_width()
         screen.blit(text, (WIDTH/2 - w/2, 280))
 
+def draw_message(message):
+        text = font_lg.render(message, 1, WHITE)
+        w = text.get_width()
+        screen.blit(text, (WIDTH/2 - w/2, 200))
+
 # Game loop
 setup()
 done = False
+message_timer = 0
 
 pygame.mixer.music.play(-1)
 
@@ -288,6 +300,10 @@ while not done:
         if block[1] < 0:
             stage = END
             
+        ''' messages '''
+        if message_timer > 0:
+            message_timer -= 1
+
     # Drawing code
     draw_background()
     draw_block()
@@ -299,6 +315,8 @@ while not done:
         draw_start_screen()
     elif stage == END:
         draw_end_screen()
+    elif message_timer > 0:
+        draw_message("Speed Bonus!")
         
     # Update screen
     pygame.display.flip()
