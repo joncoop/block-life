@@ -134,6 +134,8 @@ def update_platforms():
             coins.append(coin)
             
 def update_coins():
+    global score
+    
     to_remove = None
     
     for coin in coins:
@@ -144,6 +146,7 @@ def update_coins():
 
     if to_remove != None:
         coins.remove(to_remove)
+        score += 100
             
 def update_block():
     global block, block_vx, block_vy, collected_coins
