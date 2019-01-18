@@ -44,6 +44,11 @@ for i in range(0, 600, 48):
 
 star = pygame.image.load("images/star.png")
 
+happy = pygame.image.load("images/happy.png")
+scared = pygame.image.load("images/scared.png")
+falling = pygame.image.load("images/falling.png")
+dead = pygame.image.load("images/dead.png")
+
 # Stages
 START = 0
 PLAYING = 1
@@ -99,16 +104,17 @@ def set_music(track):
         pygame.mixer.music.play(-1)
     
 def setup():
-    global block, block_vx, block_vy, block_speed 
+    global block, block_vx, block_vy, block_speed, face
     global platform_gap, walls, wall_speed, stage
     global ticks, score, coins, collected_coins
            
     ''' Make a block '''
-    block =  [375, 25, 50, 50]
+    block =  [375, 25, 48, 48]
     block_vx = 0
     block_vy = 0
     block_speed = 6
-
+    face = happy
+    
     ''' scoring '''
     ticks = 0
     score = 0
@@ -171,7 +177,7 @@ def update_coins():
         coins.remove(to_remove)
             
 def update_block():
-    global block, block_vx, block_vy, block_speed
+    global block, block_vx, block_vy, block_speed, face
     global score, collected_coins
     global message, message_timer
     
@@ -221,7 +227,15 @@ def update_block():
             block_speed += 2
             message = "Speed Bonus!"
             message_timer = 2 * refresh_rate
-        
+    ''' update face '''
+    if block_vy > 3:
+        face = falling
+    elif block[1] < 100:
+        face = scared
+    else:
+        face = happy
+
+    
 def update_score():
     global score
 
@@ -238,8 +252,9 @@ def draw_background():
     screen.fill(DARK_BROWN)
 
 def draw_block():
-    pygame.draw.rect(screen, YELLOW, block)
-
+    #pygame.draw.rect(screen, YELLOW, block)
+    screen.blit(face, [block[0], block[1]])
+    
 def draw_platforms():
     for wall in walls:
         #pygame.draw.rect(screen, LIGHT_BROWN, wall)
@@ -323,6 +338,7 @@ while not done:
         ''' check for dead block '''
         if block[1] < 0:
             stage = END
+            face = dead
             set_music(end_theme)
             
         ''' messages '''
