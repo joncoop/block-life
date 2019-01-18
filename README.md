@@ -8,7 +8,7 @@ The goal is to last as long as you can by falling through the gaps in the platfo
 
 ## Scoring ##
 
-The score updates continually so the longer you last, the higher your score. Stars are an additional 100 points each.
+The score increasses continuously during play so the longer you last, the higher your score. Try to collect as many stars as you can. They are 100 points each.
 
 ## Power-ups ##
 
