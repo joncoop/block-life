@@ -42,6 +42,8 @@ platform_surf = pygame.Surface([600, 48], pygame.SRCALPHA, 32)
 for i in range(0, 600, 48):
     platform_surf.blit(grass, [i, 0])
 
+star = pygame.image.load("images/star.png")
+
 # Stages
 START = 0
 PLAYING = 1
@@ -81,8 +83,8 @@ def generate_platform(y):
 
     if random.randrange(0, 2) == 0:
         x = random.randrange(50, WIDTH - 50)
-        y = y - 38
-        coin = [x, y, 25, 25]
+        y = y - 48
+        coin = [x, y, 36, 36]
     else:
         coin = None
         
@@ -245,7 +247,7 @@ def draw_platforms():
 
 def draw_coins():
     for coin in coins:
-        pygame.draw.rect(screen, YELLOW, coin)
+        screen.blit(star, [coin[0], coin[1]])
         
 def draw_score():
     text = font_md.render(str(score), 1, WHITE)
