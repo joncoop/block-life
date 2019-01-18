@@ -8,8 +8,8 @@ The goal is to last as long as you can by falling through the gaps in the platfo
 
 ## Scoring ##
 
-The score updates continually so the longer you last, the higher your score. Coins are an additional 100 points each.
+The score updates continually so the longer you last, the higher your score. Stars are an additional 100 points each.
 
 ## Power-ups ##
 
-After getting 15 coins, the block gets a speed boost.
+After getting 15 stars, the block gets a speed boost.
