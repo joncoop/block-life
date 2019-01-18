@@ -4,11 +4,11 @@ This started off as a very basic clone of one of the training games in [Duck Lif
 
 ## Instructions ##
 
-Use the arrow keys to move the yellow block from side to side. The block will wrap around to the opposite side of the screen if it goes off the edge. The goal is to last as long as you can by falling through the gaps in the platforms. When the block hit the ceiling, the game is over.
+The goal is to last as long as you can by falling through the gaps in the platforms. When the block hit the ceiling, the game is over. Use the arrow keys to move the block from side to side. The block will wrap around to the opposite side of the screen if it goes off the edge. 
 
 ## Scoring ##
 
-The score updates continually with the time. Coins are an additional 100 points each.
+The score updates continually so the longer you last, the higher your score. Coins are an additional 100 points each.
 
 ## Power-ups ##
 
