@@ -12,4 +12,4 @@ The score increasses continuously during play so the longer you last, the higher
 
 ## Power-ups ##
 
-For every 15 stars gathered, the block gets a speed boost.
+After 15 stars are gathered, the block gets a speed boost.
