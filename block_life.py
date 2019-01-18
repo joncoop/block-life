@@ -18,7 +18,7 @@ clock = pygame.time.Clock()
 refresh_rate = 60
 
 # Colors
-YELLOW = (239, 239, 0)
+YELLOW = (255, 205, 1)
 WHITE = (255, 255, 255)
 LIGHT_BROWN = (139, 106, 73)
 DARK_BROWN = (98, 79, 60)
@@ -31,10 +31,11 @@ end_theme = None
 coin_sound = pygame.mixer.Sound("sounds/coin.ogg")
 
 # Fonts
-font_sm = pygame.font.Font(None, 40)
-font_md = pygame.font.Font(None, 80)
-font_lg = pygame.font.Font(None, 100)
-font_xl = pygame.font.Font("fonts/LuckiestGuy.ttf", 120)
+font_xs = pygame.font.Font(None, 40)
+font_sm = pygame.font.Font(None, 48)
+font_md = pygame.font.Font(None, 64)
+font_lg = pygame.font.Font(None, 96)
+font_xl = pygame.font.Font("fonts/LuckiestGuy.ttf", 128)
 
 # Images
 grass = pygame.image.load("images/grass_48x48.png")
@@ -43,6 +44,7 @@ for i in range(0, 600, 48):
     platform_surf.blit(grass, [i, 0])
 
 star = pygame.image.load("images/star.png")
+star_sm = pygame.image.load("images/star_sm.png")
 
 happy = pygame.image.load("images/happy.png")
 scared = pygame.image.load("images/scared.png")
@@ -97,7 +99,7 @@ def generate_platform(y):
 
 def set_music(track):
     if pygame.mixer.music.get_busy():
-        pygame.mixer.music.stop()
+        pygame.mixer.music.fadeout(2500)
 
     if track != None:  
         pygame.mixer.music.load(track)
@@ -267,32 +269,34 @@ def draw_coins():
         
 def draw_score():
     text = font_md.render(str(score), 1, WHITE)
-    screen.blit(text, (20, 20))
+    screen.blit(text, [16, 16])
     
-    text = font_md.render(str(collected_coins), 1, YELLOW)
+    text = font_xs.render(str(collected_coins), 1, YELLOW)
     w = text.get_width()
-    screen.blit(text, (WIDTH - w - 20, 20))
+    screen.blit(text, [WIDTH - w - 16, 20])
+
+    screen.blit(star_sm, [WIDTH - w - 48, 20])
     
 def draw_start_screen():
         text = font_xl.render("BLOCK LIFE", 1, WHITE)
         w = text.get_width()
         screen.blit(text, (WIDTH/2 - w/2, 180))
         
-        text = font_sm.render("Press SPACE to start", 1, WHITE)
+        text = font_xs.render("Press SPACE to start", 1, WHITE)
         w = text.get_width()
-        screen.blit(text, (WIDTH/2 - w/2, 280))
+        screen.blit(text, (WIDTH/2 - w/2, 300))
         
 def draw_end_screen():
         text = font_lg.render("GAME OVER", 1, WHITE)
         w = text.get_width()
         screen.blit(text, (WIDTH/2 - w/2, 200))
         
-        text = font_sm.render("Press SPACE to play again", 1, WHITE)
+        text = font_xs.render("Press SPACE to play again", 1, WHITE)
         w = text.get_width()
-        screen.blit(text, (WIDTH/2 - w/2, 280))
+        screen.blit(text, (WIDTH/2 - w/2, 270))
 
 def draw_message(message):
-        text = font_lg.render(message, 1, WHITE)
+        text = font_md.render(message, 1, WHITE)
         w = text.get_width()
         screen.blit(text, (WIDTH/2 - w/2, 200))
 
