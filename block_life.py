@@ -24,14 +24,17 @@ LIGHT_BROWN = (139, 106, 73)
 DARK_BROWN = (98, 79, 60)
 
 # Sounds
-pygame.mixer.music.load("sounds/theme.ogg")
+start_theme = None
+main_theme = "sounds/theme.ogg"
+end_theme = None
+
 coin_sound = pygame.mixer.Sound("sounds/coin.ogg")
 
 # Fonts
 font_sm = pygame.font.Font(None, 40)
 font_md = pygame.font.Font(None, 80)
 font_lg = pygame.font.Font(None, 100)
-font_xl = pygame.font.Font(None, 140)
+font_xl = pygame.font.Font("fonts/LuckiestGuy.ttf", 120)
 
 # Stages
 START = 0
@@ -79,6 +82,14 @@ def generate_platform(y):
         
     return wall1, wall2, coin
 
+def set_music(track):
+    if pygame.mixer.music.get_busy():
+        pygame.mixer.music.stop()
+
+    if track != None:  
+        pygame.mixer.music.load(track)
+        pygame.mixer.music.play(-1)
+    
 def setup():
     global block, block_vx, block_vy, block_speed 
     global platform_gap, walls, wall_speed, stage
@@ -113,6 +124,9 @@ def setup():
 
     ''' set stage '''
     stage = START
+
+    ''' music '''
+    set_music(start_theme)
 
 def update_platforms():
     global coins
@@ -262,8 +276,6 @@ setup()
 done = False
 message_timer = 0
 
-pygame.mixer.music.play(-1)
-
 while not done:
     # Event processing (React to key presses, mouse clicks, etc.)
     for event in pygame.event.get():
@@ -272,6 +284,7 @@ while not done:
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_SPACE:
                 if stage == START:
+                    set_music(main_theme)
                     stage = PLAYING
                 elif stage == END:
                     setup()
@@ -301,6 +314,7 @@ while not done:
         ''' check for dead block '''
         if block[1] < 0:
             stage = END
+            set_music(end_theme)
             
         ''' messages '''
         if message_timer > 0:
