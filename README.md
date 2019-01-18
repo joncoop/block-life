@@ -16,5 +16,6 @@ After 15 stars are gathered, the block gets a speed boost.
 
 ### Credits ###
 
-Block icons designed by [rawpixel.com / Freepik](a href="http://www.freepik.com")
-Fonts:  [Luckiest Guy](https://www.1001freefonts.com/luckiest-guy.font)
+- Platform art from [OpenGameArt.org](https://opengameart.org/)
+- Block icons designed by [rawpixel.com / Freepik](http://www.freepik.com)
+- Fonts: [Luckiest Guy](https://www.1001freefonts.com/luckiest-guy.font)
