@@ -80,9 +80,9 @@ def generate_platform(y):
     return wall1, wall2, coin
 
 def setup():
-    global block, block_vx, block_vy, block_speed, score 
+    global block, block_vx, block_vy, block_speed 
     global platform_gap, walls, wall_speed, stage
-    global coins, collected_coins
+    global ticks, score, coins, collected_coins
            
     ''' Make a block '''
     block =  [375, 25, 50, 50]
@@ -91,6 +91,7 @@ def setup():
     block_speed = 6
 
     ''' scoring '''
+    ticks = 0
     score = 0
     collected_coins = 0
 
@@ -150,7 +151,7 @@ def update_coins():
 def update_block():
     global block, block_vx, block_vy, block_speed
     global score, collected_coins
-    global message_timer
+    global message, message_timer
     
     ''' apply gravity '''
     block_vy += gravity
@@ -179,11 +180,11 @@ def update_block():
             elif block_vx < 0:
                 block[0] = wall[0] + wall[2]
 
-    ''' keep block on the screen '''
-    if block[0] < 0:
-        block[0] = 0
-    elif block[0] > WIDTH - block[2]:
+    ''' block wraps around screen '''
+    if block[0] < 0 - block[2]:
         block[0] = WIDTH - block[2]
+    elif block[0] > WIDTH:
+        block[0] = 0 - block[2]
 
     ''' collect coins '''
     hit_list = [coin for coin in coins if intersects(block, coin)]
@@ -196,6 +197,7 @@ def update_block():
 
         if collected_coins == 15:
             block_speed += 2
+            message = "Speed Bonus!"
             message_timer = 2 * refresh_rate
         
 def update_score():
@@ -206,7 +208,7 @@ def update_score():
 def update_level():
     global wall_speed
     
-    if score % 100 == 0:
+    if ticks % 100 == 0:
         wall_speed += .08
             
 # Drawing functions
@@ -304,6 +306,9 @@ while not done:
         if message_timer > 0:
             message_timer -= 1
 
+        ''' count ticks '''
+        ticks += 1
+
     # Drawing code
     draw_background()
     draw_block()
@@ -316,7 +321,7 @@ while not done:
     elif stage == END:
         draw_end_screen()
     elif message_timer > 0:
-        draw_message("Speed Bonus!")
+        draw_message(message)
         
     # Update screen
     pygame.display.flip()
