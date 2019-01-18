@@ -36,6 +36,12 @@ font_md = pygame.font.Font(None, 80)
 font_lg = pygame.font.Font(None, 100)
 font_xl = pygame.font.Font("fonts/LuckiestGuy.ttf", 120)
 
+# Images
+grass = pygame.image.load("images/grass_48x48.png")
+platform_surf = pygame.Surface([600, 48], pygame.SRCALPHA, 32)
+for i in range(0, 600, 48):
+    platform_surf.blit(grass, [i, 0])
+
 # Stages
 START = 0
 PLAYING = 1
@@ -234,7 +240,8 @@ def draw_block():
 
 def draw_platforms():
     for wall in walls:
-        pygame.draw.rect(screen, LIGHT_BROWN, wall)
+        #pygame.draw.rect(screen, LIGHT_BROWN, wall)
+        screen.blit(platform_surf, [wall[0], wall[1]])
 
 def draw_coins():
     for coin in coins:
