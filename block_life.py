@@ -39,9 +39,17 @@ font_xl = pygame.font.Font("fonts/LuckiestGuy.ttf", 128)
 
 # Images
 grass = pygame.image.load("images/grass_48x48.png")
+grass_dead = pygame.image.load("images/grass_dead_48x48.png")
+
+mud_left = pygame.image.load("images/mud_left.png")
+mud_middle = pygame.image.load("images/mud_middle.png")
+mud_right = pygame.image.load("images/mud_right.png")
+
 platform_surf = pygame.Surface([600, 48], pygame.SRCALPHA, 32)
-for i in range(0, 600, 48):
+platform_surf.blit(grass, [0, 0])
+for i in range(48, 600-48, 48):
     platform_surf.blit(grass, [i, 0])
+platform_surf.blit(grass, [600-48, 0])
 
 star = pygame.image.load("images/star.png")
 star_sm = pygame.image.load("images/star_sm.png")
