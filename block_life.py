@@ -227,10 +227,11 @@ def update_block():
             block_speed += 2
             message = "Speed Bonus!"
             message_timer = 2 * refresh_rate
+            
     ''' update face '''
     if block_vy > 3:
         face = falling
-    elif block[1] < 100:
+    elif block[1] < 150:
         face = scared
     else:
         face = happy
