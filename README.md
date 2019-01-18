@@ -14,7 +14,7 @@ The score increasses continuously during play so the longer you last, the higher
 
 After 15 stars are gathered, the block gets a speed boost.
 
-### Credits ###
+## Credits ##
 
 - Platform art from [OpenGameArt.org](https://opengameart.org/)
 - Block icons designed by [rawpixel.com / Freepik](http://www.freepik.com)
