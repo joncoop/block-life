@@ -59,6 +59,14 @@ scared = pygame.image.load("images/scared.png")
 falling = pygame.image.load("images/falling.png")
 dead = pygame.image.load("images/dead.png")
 
+
+bg_surf = pygame.Surface([WIDTH, HEIGHT], pygame.SRCALPHA, 32)
+dirt = pygame.image.load("images/dirt3.png")
+for x in range(0, WIDTH, 200):
+    for y in range(0, HEIGHT, 200):
+        bg_surf.blit(dirt, [x, y])
+
+
 # Stages
 START = 0
 PLAYING = 1
@@ -117,6 +125,7 @@ def setup():
     global block, block_vx, block_vy, block_speed, face
     global platform_gap, walls, wall_speed, stage
     global ticks, score, coins, collected_coins
+    global bg_y
            
     ''' Make a block '''
     block =  [375, 25, 48, 48]
@@ -143,6 +152,9 @@ def setup():
         if coin != None:
             coins.append(coin)
 
+    ''' background scroll position '''
+    bg_y = 0
+    
     ''' initial wall speed '''
     wall_speed = 2
 
@@ -190,6 +202,7 @@ def update_block():
     global block, block_vx, block_vy, block_speed, face
     global score, collected_coins
     global message, message_timer
+    global bg_y
     
     ''' apply gravity '''
     block_vy += gravity
@@ -200,6 +213,8 @@ def update_block():
     else:
         for obj in (walls + coins):
             obj[1] -= block_vy
+
+        bg_y -= 3 * block_vy // 4
 
     ''' resolve collisions with each wall '''
     for wall in walls:
@@ -257,11 +272,21 @@ def update_level():
     
     if ticks % 100 == 0:
         wall_speed += .08
-            
+
+def update_bg():
+    global bg_y
+
+    bg_y -= 3 * wall_speed // 4
+
+    if bg_y < -HEIGHT:
+        bg_y = 0
+        
 # Drawing functions
 def draw_background():
-    screen.fill(DARK_BROWN)
-
+    #screen.fill(DARK_BROWN)
+    screen.blit(bg_surf, [0, bg_y])
+    screen.blit(bg_surf, [0, bg_y + HEIGHT])
+    
 def draw_block():
     #pygame.draw.rect(screen, YELLOW, block)
     screen.blit(face, [block[0], block[1]])
@@ -347,6 +372,7 @@ while not done:
         update_block()
         update_score()
         update_level()
+        update_bg()
         
         ''' check for dead block '''
         if block[1] < 0:
