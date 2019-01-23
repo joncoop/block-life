@@ -20,8 +20,8 @@ refresh_rate = 60
 # Colors
 YELLOW = (255, 205, 1)
 WHITE = (255, 255, 255)
-LIGHT_BROWN = (139, 106, 73)
-DARK_BROWN = (98, 79, 60)
+BROWN = (100, 75, 55)
+SKY_BLUE = (135, 206, 235)
 
 # Sounds
 start_theme = None
@@ -46,10 +46,10 @@ mud_middle = pygame.image.load("images/mud_middle.png")
 mud_right = pygame.image.load("images/mud_right.png")
 
 platform_surf = pygame.Surface([600, 48], pygame.SRCALPHA, 32)
-platform_surf.blit(grass, [0, 0])
+platform_surf.blit(mud_left, [0, 0])
 for i in range(48, 600-48, 48):
-    platform_surf.blit(grass, [i, 0])
-platform_surf.blit(grass, [600-48, 0])
+    platform_surf.blit(mud_middle, [i, 0])
+platform_surf.blit(mud_right, [600-48, 0])
 
 star = pygame.image.load("images/star.png")
 star_sm = pygame.image.load("images/star_sm.png")
@@ -60,10 +60,11 @@ falling = pygame.image.load("images/falling.png")
 dead = pygame.image.load("images/dead.png")
 
 
-bg_surf = pygame.Surface([WIDTH, HEIGHT], pygame.SRCALPHA, 32)
+bg_surf = pygame.Surface([WIDTH, HEIGHT + 600], pygame.SRCALPHA, 32)
+bg_surf.fill(SKY_BLUE)
 dirt = pygame.image.load("images/dirt3.png")
 for x in range(0, WIDTH, 200):
-    for y in range(0, HEIGHT, 200):
+    for y in range(400, HEIGHT + 600, 200):
         bg_surf.blit(dirt, [x, y])
 
 
@@ -128,7 +129,7 @@ def setup():
     global bg_y
            
     ''' Make a block '''
-    block =  [375, 25, 48, 48]
+    block =  [376, 72, 48, 48]
     block_vx = 0
     block_vy = 0
     block_speed = 6
@@ -145,7 +146,7 @@ def setup():
     coins = []
     
     for i in range(5):
-        left, right, coin = generate_platform(i * platform_gap + platform_gap)
+        left, right, coin = generate_platform(i * platform_gap + 2 * platform_gap)
         walls.append(left)
         walls.append(right)
 
@@ -276,16 +277,20 @@ def update_level():
 def update_bg():
     global bg_y
 
-    bg_y -= 3 * wall_speed // 4
+    if bg_y > -400:
+        scroll_speed = wall_speed
+    else:
+        scroll_speed = 5 * wall_speed // 6
+        
+    bg_y -= scroll_speed
 
-    if bg_y < -HEIGHT:
-        bg_y = 0
+    if bg_y < -600:
+        bg_y = -400
         
 # Drawing functions
 def draw_background():
     #screen.fill(DARK_BROWN)
     screen.blit(bg_surf, [0, bg_y])
-    screen.blit(bg_surf, [0, bg_y + HEIGHT])
     
 def draw_block():
     #pygame.draw.rect(screen, YELLOW, block)
@@ -311,7 +316,7 @@ def draw_score():
     screen.blit(star_sm, [WIDTH - w - 48, 20])
     
 def draw_start_screen():
-        text = font_xl.render("BLOCK LIFE", 1, WHITE)
+        text = font_xl.render("BLOCK LIFE", 1, BROWN)
         w = text.get_width()
         screen.blit(text, (WIDTH/2 - w/2, 180))
         
@@ -322,11 +327,11 @@ def draw_start_screen():
 def draw_end_screen():
         text = font_lg.render("GAME OVER", 1, WHITE)
         w = text.get_width()
-        screen.blit(text, (WIDTH/2 - w/2, 200))
+        screen.blit(text, (WIDTH/2 - w/2, 210))
         
         text = font_xs.render("Press SPACE to play again", 1, WHITE)
         w = text.get_width()
-        screen.blit(text, (WIDTH/2 - w/2, 270))
+        screen.blit(text, (WIDTH/2 - w/2, 280))
 
 def draw_message(message):
         text = font_md.render(message, 1, WHITE)
