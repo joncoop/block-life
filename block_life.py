@@ -35,15 +35,13 @@ font_xs = pygame.font.Font(None, 40)
 font_sm = pygame.font.Font(None, 48)
 font_md = pygame.font.Font(None, 64)
 font_lg = pygame.font.Font(None, 96)
-font_xl = pygame.font.Font("fonts/LuckiestGuy.ttf", 128)
+font_xl = pygame.font.Font("fonts/LuckiestGuy.ttf", 112)
 
 # Images
-grass = pygame.image.load("images/grass_48x48.png")
-grass_dead = pygame.image.load("images/grass_dead_48x48.png")
-
-mud_left = pygame.image.load("images/mud_left.png")
-mud_middle = pygame.image.load("images/mud_middle.png")
-mud_right = pygame.image.load("images/mud_right.png")
+''' platforms '''
+mud_left = pygame.image.load("images/mud_left.png").convert_alpha()
+mud_middle = pygame.image.load("images/mud_middle.png").convert_alpha()
+mud_right = pygame.image.load("images/mud_right.png").convert_alpha()
 
 platform_surf = pygame.Surface([600, 48], pygame.SRCALPHA, 32)
 platform_surf.blit(mud_left, [0, 0])
@@ -51,22 +49,27 @@ for i in range(48, 600-48, 48):
     platform_surf.blit(mud_middle, [i, 0])
 platform_surf.blit(mud_right, [600-48, 0])
 
-star = pygame.image.load("images/star.png")
-star_sm = pygame.image.load("images/star_sm.png")
+''' stars '''
+star = pygame.image.load("images/star.png").convert_alpha()
+star_sm = pygame.image.load("images/star_sm.png").convert_alpha()
 
-happy = pygame.image.load("images/happy.png")
-scared = pygame.image.load("images/scared.png")
-falling = pygame.image.load("images/falling.png")
-dead = pygame.image.load("images/dead.png")
+''' block '''
+happy = pygame.image.load("images/happy.png").convert_alpha()
+scared = pygame.image.load("images/scared.png").convert_alpha()
+falling = pygame.image.load("images/falling.png").convert_alpha()
+dead = pygame.image.load("images/dead.png").convert_alpha()
 
-
+''' background '''
+rocks = pygame.image.load("images/rocks.png").convert_alpha()
 bg_surf = pygame.Surface([WIDTH, HEIGHT + 600], pygame.SRCALPHA, 32)
 bg_surf.fill(SKY_BLUE)
-dirt = pygame.image.load("images/dirt3.png")
 for x in range(0, WIDTH, 200):
     for y in range(400, HEIGHT + 600, 200):
-        bg_surf.blit(dirt, [x, y])
+        bg_surf.blit(rocks, [x, y])
 
+''' window icon '''
+icon = pygame.image.load("images/icon.png").convert_alpha()
+pygame.display.set_icon(icon)
 
 # Stages
 START = 0
@@ -126,7 +129,7 @@ def setup():
     global block, block_vx, block_vy, block_speed, face
     global platform_gap, walls, wall_speed, stage
     global ticks, score, coins, collected_coins
-    global bg_y
+    global bg_y, scroll_speed
            
     ''' Make a block '''
     block =  [376, 72, 48, 48]
@@ -155,6 +158,7 @@ def setup():
 
     ''' background scroll position '''
     bg_y = 0
+    scroll_speed = 0
     
     ''' initial wall speed '''
     wall_speed = 2
@@ -167,6 +171,7 @@ def setup():
 
 def update_platforms():
     global coins
+    
     to_remove = None
     
     for wall in walls:
@@ -215,7 +220,7 @@ def update_block():
         for obj in (walls + coins):
             obj[1] -= block_vy
 
-        bg_y -= 3 * block_vy // 4
+        bg_y -= block_vy
 
     ''' resolve collisions with each wall '''
     for wall in walls:
@@ -275,7 +280,7 @@ def update_level():
         wall_speed += .08
 
 def update_bg():
-    global bg_y
+    global bg_y, scroll_speed
 
     if bg_y > -400:
         scroll_speed = wall_speed
@@ -289,16 +294,13 @@ def update_bg():
         
 # Drawing functions
 def draw_background():
-    #screen.fill(DARK_BROWN)
     screen.blit(bg_surf, [0, bg_y])
     
 def draw_block():
-    #pygame.draw.rect(screen, YELLOW, block)
     screen.blit(face, [block[0], block[1]])
     
 def draw_platforms():
     for wall in walls:
-        #pygame.draw.rect(screen, LIGHT_BROWN, wall)
         screen.blit(platform_surf, [wall[0], wall[1]])
 
 def draw_coins():
@@ -322,7 +324,7 @@ def draw_start_screen():
         
         text = font_xs.render("Press SPACE to start", 1, WHITE)
         w = text.get_width()
-        screen.blit(text, (WIDTH/2 - w/2, 300))
+        screen.blit(text, (WIDTH/2 - w/2, 290))
         
 def draw_end_screen():
         text = font_lg.render("GAME OVER", 1, WHITE)
