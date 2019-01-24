@@ -205,29 +205,6 @@ def update_coins():
     if to_remove != None:
         coins.remove(to_remove)
 
-def get_move_direction():
-    for wall in walls:
-        if wall[1] >= block[1] + block[3]:
-            gap = wall[0] + wall[2] + 100
-            break
-
-    block_center = block[0] + block[2] / 2
-
-    if block_center > gap:
-        left_dist = block_center - gap
-    else:
-        left_dist = block_center + (WIDTH - gap)
-
-    if block_center < gap:
-        right_dist = gap - block_center
-    else:
-        right_dist = (WIDTH - block_center) + gap
-
-    if left_dist < right_dist:
-        return -1
-    else:
-        return 1
-
 def update_block():
     global block, block_vx, block_vy, block_speed, face
     global score, collected_coins
@@ -315,7 +292,50 @@ def update_bg():
 
     if bg_y < -600:
         bg_y = -400
+
+# AI
+def get_move_direction():
+    next_wall = None
+    for wall in walls:
+        if wall[1] >= block[1] + block[3]:
+            gap = wall[0] + wall[2] + 100
+            next_wall = wall
+            break
+
+    block_center = block[0] + block[2] / 2
+    block_top = block[1]
+
+    if block_center > gap:
+        left_dist = block_center - gap
+    else:
+        left_dist = block_center + (WIDTH - gap)
+
+    if block_center < gap:
+        right_dist = gap - block_center
+    else:
+        right_dist = (WIDTH - block_center) + gap
+
+    coin_center = None
+    for coin in coins:
+        if 0 < next_wall[1] - coin[1] < 150:
+            coin_center = coin[0] + coin[2] / 2
+    
+    if coin_center != None:
+        risk_limit = block_top - 3000 / wall_speed
         
+        if abs(left_dist - right_dist) < risk_limit:
+            if coin_center < block_center:
+                return -1
+            else:
+                return 1
+
+    if abs(block_center - gap) < 10:
+        return 0
+    elif left_dist < right_dist:
+        return -1
+    else:
+        return 1
+    
 # Drawing functions
 def draw_background():
     screen.blit(bg_surf, [0, bg_y])
