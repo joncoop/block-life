@@ -170,18 +170,19 @@ def setup():
     set_music(start_theme)
 
 def update_platforms():
-    global coins
+    global walls, coins
     
-    to_remove = None
+    to_remove = []
     
     for wall in walls:
         wall[1] -= wall_speed
 
         if wall[1] + wall[3] < 0:
-            to_remove = wall
+            to_remove.append(wall)
 
-    if to_remove != None:
-        walls.remove(to_remove)
+    if len(to_remove) > 0:
+        walls = [wall for wall in walls if wall not in to_remove]
+        
         y = walls[-1][1] + platform_gap
         left, right, coin = generate_platform(y)
         walls.append(left)
@@ -320,20 +321,20 @@ def draw_score():
 def draw_start_screen():
         text = font_xl.render("BLOCK LIFE", 1, BROWN)
         w = text.get_width()
-        screen.blit(text, (WIDTH/2 - w/2, 180))
+        screen.blit(text, [WIDTH/2 - w/2, 180])
         
         text = font_xs.render("Press SPACE to start", 1, WHITE)
         w = text.get_width()
-        screen.blit(text, (WIDTH/2 - w/2, 290))
+        screen.blit(text, [WIDTH/2 - w/2, 290])
         
 def draw_end_screen():
         text = font_lg.render("GAME OVER", 1, WHITE)
         w = text.get_width()
-        screen.blit(text, (WIDTH/2 - w/2, 210))
+        screen.blit(text, [WIDTH/2 - w/2, 210])
         
         text = font_xs.render("Press SPACE to play again", 1, WHITE)
         w = text.get_width()
-        screen.blit(text, (WIDTH/2 - w/2, 280))
+        screen.blit(text, [WIDTH/2 - w/2, 280])
 
 def draw_message(message):
         text = font_md.render(message, 1, WHITE)
