@@ -1,6 +1,7 @@
 # Imports
 import pygame
 import random
+import datetime
 
 # Initialize game engine
 pygame.init()
@@ -164,7 +165,7 @@ def setup():
     wall_speed = 2
 
     ''' set stage '''
-    stage = START
+    stage = PLAYING
 
     ''' music '''
     set_music(start_theme)
@@ -292,49 +293,6 @@ def update_bg():
 
     if bg_y < -600:
         bg_y = -400
-
-# AI
-def get_move_direction():
-    next_wall = None
-    for wall in walls:
-        if wall[1] >= block[1] + block[3]:
-            gap = wall[0] + wall[2] + 100
-            next_wall = wall
-            break
-
-    block_center = block[0] + block[2] / 2
-    block_top = block[1]
-
-    if block_center > gap:
-        left_dist = block_center - gap
-    else:
-        left_dist = block_center + (WIDTH - gap)
-
-    if block_center < gap:
-        right_dist = gap - block_center
-    else:
-        right_dist = (WIDTH - block_center) + gap
-
-    coin_center = None
-    for coin in coins:
-        if 0 < next_wall[1] - coin[1] < 150:
-            coin_center = coin[0] + coin[2] / 2
-    
-    if coin_center != None:
-        risk_limit = block_top - 3000 / wall_speed
-        
-        if abs(left_dist - right_dist) < risk_limit:
-            if coin_center < block_center:
-                return -1
-            else:
-                return 1
-
-    if abs(block_center - gap) < 10:
-        return 0
-    elif left_dist < right_dist:
-        return -1
-    else:
-        return 1
     
 # Drawing functions
 def draw_background():
@@ -384,6 +342,74 @@ def draw_message(message):
         w = text.get_width()
         screen.blit(text, (WIDTH/2 - w/2, 200))
 
+# AI
+NORMAL = 0
+FAST = 1
+NO_DRAW = 2
+
+mode = NO_DRAW
+logging = True
+
+if mode == FAST:
+    refresh_rate = 240
+    
+if logging:
+    now = datetime.datetime.now()
+    f_path = now.strftime("data/%Y%m%d-%H%M%S-%f_scores.txt")
+    print("Scores logged to:\n" + f_path + "\n")
+
+def get_move_direction():
+    next_wall = None
+    for wall in walls:
+        if wall[1] >= block[1] + block[3]:
+            gap = wall[0] + wall[2] + 100
+            next_wall = wall
+            break
+
+    block_center = block[0] + block[2] / 2
+    block_top = block[1]
+
+    if block_center > gap:
+        left_dist = block_center - gap
+    else:
+        left_dist = block_center + (WIDTH - gap)
+
+    if block_center < gap:
+        right_dist = gap - block_center
+    else:
+        right_dist = (WIDTH - block_center) + gap
+
+    coin_center = None
+    for coin in coins:
+        if 0 < next_wall[1] - coin[1] < 150:
+            coin_center = coin[0] + coin[2] / 2
+    
+    if coin_center != None:
+        risk_limit = block_top - 3000 / wall_speed
+        
+        if abs(left_dist - right_dist) < risk_limit:
+            if coin_center < block_center:
+                return -1
+            else:
+                return 1
+
+    if abs(block_center - gap) < 10:
+        return 0
+    elif left_dist < right_dist:
+        return -1
+    else:
+        return 1
+
+def log_score():
+    with open(f_path, 'a') as f:
+        line = str(score) + "," + str(collected_coins) + "\n"
+        f.write(line)
+
+def restart():
+    if logging:
+        log_score()
+    setup()
+    
 # Game loop
 setup()
 done = False
@@ -403,7 +429,7 @@ while not done:
                     setup()
 
     state = pygame.key.get_pressed()
-    
+
     # Game logic
     if stage == PLAYING:
         direction = get_move_direction()
@@ -432,6 +458,9 @@ while not done:
             stage = END
             face = dead
             set_music(end_theme)
+
+            # go again
+            restart()
             
         ''' messages '''
         if message_timer > 0:
@@ -441,24 +470,25 @@ while not done:
         ticks += 1
 
     # Drawing code
-    draw_background()
-    draw_block()
-    draw_platforms()
-    draw_coins()
-    draw_score()
+    if mode != NO_DRAW:
+        draw_background()
+        draw_block()
+        draw_platforms()
+        draw_coins()
+        draw_score()
 
-    if stage == START:
-        draw_start_screen()
-    elif stage == END:
-        draw_end_screen()
-    elif message_timer > 0:
-        draw_message(message)
-        
-    # Update screen
-    pygame.display.flip()
+        if stage == START:
+            draw_start_screen()
+        elif stage == END:
+            draw_end_screen()
+        elif message_timer > 0:
+            draw_message(message)
+            
+        # Update screen
+        pygame.display.flip()
 
-    # Limit refresh rate 
-    clock.tick(refresh_rate)
+        # Limit refresh rate 
+        clock.tick(refresh_rate)
 
 # Close window and quit
 pygame.quit()
