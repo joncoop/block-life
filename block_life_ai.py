@@ -347,8 +347,8 @@ NORMAL = 0
 FAST = 1
 NO_DRAW = 2
 
-mode = NO_DRAW
-logging = True
+mode = NORMAL
+logging = False
 
 if mode == FAST:
     refresh_rate = 240
@@ -358,6 +358,27 @@ if logging:
     f_path = now.strftime("data/%Y%m%d-%H%M%S-%f_scores.txt")
     print("Scores logged to:\n" + f_path + "\n")
 
+def get_next_coin():
+    '''
+    return int
+    gets x value for location of coin between current platforms,
+    returns None if no coin exists
+    '''
+    pass
+
+def get_distance_to_coin(block, coin):
+    '''
+    return int
+    negative = left, positive = right
+    '''
+    pass
+
+def is_coin_reachable(block, coin):
+    pass
+
+def risk_tolerance(block_height, wall_speed):
+    pass
+
 def get_move_direction():
     next_wall = None
     for wall in walls:
@@ -365,6 +386,7 @@ def get_move_direction():
             gap = wall[0] + wall[2] + 100
             next_wall = wall
             break
+
 
     block_center = block[0] + block[2] / 2
     block_top = block[1]
