@@ -384,7 +384,7 @@ def get_distance_to_coin(coin):
     return coin_center - block_center
 
 def get_max_distance(coin):
-    arbitrary_constant = 1750
+    arbitrary_constant = 1800
     
     return coin[1] / HEIGHT * arbitrary_constant / wall_speed
 
