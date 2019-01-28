@@ -351,7 +351,7 @@ mode = NO_DRAW
 logging = True
 
 chase_coins = True
-num_trials = 150
+num_trials = 10000
 
 if mode == FAST:
     refresh_rate = 240
@@ -384,7 +384,7 @@ def get_distance_to_coin(coin):
     return coin_center - block_center
 
 def get_max_distance(coin):
-    arbitrary_constant = 1800
+    arbitrary_constant = 1750
     
     return coin[1] / HEIGHT * arbitrary_constant / wall_speed
 
