@@ -347,8 +347,11 @@ NORMAL = 0
 FAST = 1
 NO_DRAW = 2
 
-mode = NORMAL
-logging = False
+mode = NO_DRAW
+logging = True
+
+chase_coins = True
+num_trials = 150
 
 if mode == FAST:
     refresh_rate = 240
@@ -364,58 +367,77 @@ def get_next_coin():
     gets x value for location of coin between current platforms,
     returns None if no coin exists
     '''
-    pass
+    for coin in coins:
+        if -10 < coin[1] - block[1] < 150 :
+            return coin
 
-def get_distance_to_coin(block, coin):
+    return None
+
+def get_distance_to_coin(coin):
     '''
     return int
     negative = left, positive = right
     '''
-    pass
+    block_center = block[0] + block[2] / 2
+    coin_center = coin[0] + coin[2] / 2
 
-def is_coin_reachable(block, coin):
-    pass
+    return coin_center - block_center
 
-def risk_tolerance(block_height, wall_speed):
-    pass
+def get_max_distance(coin):
+    arbitrary_constant = 1800
+    
+    return coin[1] / HEIGHT * arbitrary_constant / wall_speed
 
-def get_move_direction():
-    next_wall = None
+def get_next_gap():
+    '''
+    return int, int
+    left edge and right edge of gap
+    '''
     for wall in walls:
         if wall[1] >= block[1] + block[3]:
-            gap = wall[0] + wall[2] + 100
-            next_wall = wall
-            break
+            return wall[0] + wall[2], wall[0] + wall[2] + 200
 
-
+def get_distances_to_gap(gap_left, gap_right):
+    '''
+    return int
+    negative = left, positive = right
+    '''
+    gap_center = (gap_left + gap_right) / 2
     block_center = block[0] + block[2] / 2
-    block_top = block[1]
-
-    if block_center > gap:
-        left_dist = block_center - gap
-    else:
-        left_dist = block_center + (WIDTH - gap)
-
-    if block_center < gap:
-        right_dist = gap - block_center
-    else:
-        right_dist = (WIDTH - block_center) + gap
-
-    coin_center = None
-    for coin in coins:
-        if 0 < next_wall[1] - coin[1] < 150:
-            coin_center = coin[0] + coin[2] / 2
     
-    if coin_center != None:
-        risk_limit = block_top - 3000 / wall_speed
-        
-        if abs(left_dist - right_dist) < risk_limit:
-            if coin_center < block_center:
-                return -1
-            else:
-                return 1
+    if block_center > gap_center:
+        left_dist = block_center - gap_center
+    else:
+        left_dist = block_center + (WIDTH - gap_center)
 
-    if abs(block_center - gap) < 10:
+    if block_center < gap_center:
+        right_dist = gap_center - block_center
+    else:
+        right_dist = (WIDTH - block_center) + gap_center
+
+    return left_dist, right_dist
+
+def get_move_direction():
+    gap_left, gap_right = get_next_gap()
+    left_dist, right_dist = get_distances_to_gap(gap_left, gap_right)
+    
+    block_center = block[0] + block[2] / 2
+    gap_center = (gap_left + gap_right) / 2
+
+    if chase_coins:
+        next_coin = get_next_coin()
+
+        if next_coin != None:
+            coin_dist = get_distance_to_coin(next_coin)
+            max_dist = get_max_distance(next_coin)
+
+            if abs(coin_dist) < max_dist:
+                if coin_dist < 0:
+                    return -1
+                elif coin_dist > 0:
+                    return 1
+
+    if abs(block_center - gap_center) < 5:
         return 0
     elif left_dist < right_dist:
         return -1
@@ -428,9 +450,17 @@ def log_score():
         f.write(line)
 
 def restart():
+    global num_trials, done
+    
+    num_trials -= 1
+
     if logging:
         log_score()
-    setup()
+
+    if num_trials > 0:
+        setup()
+    else:
+        done = True
     
 # Game loop
 setup()

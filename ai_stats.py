@@ -2,7 +2,7 @@ import statistics
 import time
 
 # settings
-file_path = "20190125-140235-478045_scores.txt"
+file_path = "data/20190128-171025-897713_scores.txt"
 refresh = True
 pause_seconds = 30
 
@@ -18,9 +18,10 @@ def correlation(x_vals, x_bar, sx, y_vals, y_bar, sy):
     
 # let's do this
 running = True
+last_num_games = 0
 
 while running:
-    with open("data/" + file_path, "r") as f:
+    with open(file_path, "r") as f:
         lines = f.read().splitlines()
 
     scores = []
@@ -84,9 +85,12 @@ while running:
     print()
     print()
 
-
     
     if refresh:
         time.sleep(pause_seconds)
-        
-    running = refresh
+
+    if last_num_games != num_games:
+        running = refresh
+        last_num_games = num_games
+    else:
+        running = False
