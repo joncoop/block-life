@@ -2,7 +2,7 @@
 
 This started off as a very basic clone of one of the training games in [Duck Life 4](http://www.abcya.com/duck_life_4.htm), but I'm not gonna lie. Right now this game is pretty epic.
 
-![Start screen](https://raw.githubusercontent.com/joncoop/block-life/master/screenshots/start.png=250x)
+![Start screen](https://raw.githubusercontent.com/joncoop/block-life/master/screenshots/start.png){ width=50% }
 
 ## Instructions ##
 
